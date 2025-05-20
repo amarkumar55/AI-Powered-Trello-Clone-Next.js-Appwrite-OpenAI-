@@ -26,10 +26,19 @@ const Column = ({ id, todos, index }: Props) => {
     state.setNewTaskType,
   ]);
   const [openModel] = useModelStore((state) => [state.openModel]);
+
   const handleAddTodo = () => {
     setNewTaskType(id);
     openModel();
   };
+
+  // Filter todos once instead of in render
+  const filteredTodos = searchString
+    ? todos.filter((todo) =>
+        todo.title.toLowerCase().includes(searchString.toLowerCase())
+      )
+    : todos;
+
   return (
     <Draggable draggableId={id} index={index}>
       {(provided) => (
@@ -38,7 +47,7 @@ const Column = ({ id, todos, index }: Props) => {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          <Droppable droppableId={index.toString()} type="card">
+          <Droppable droppableId={id} type="card">
             {(provided, snapshot) => (
               <div
                 {...provided.droppableProps}
@@ -48,50 +57,39 @@ const Column = ({ id, todos, index }: Props) => {
                 }`}
               >
                 <h2 className="flex justify-between font-bold text-xl p-2">
-                  {idToColumnText[id]}{" "}
+                  {idToColumnText[id]}
                   <span className="text-gray-500 bg-gray-200 rounded-full px-2 font-normal py-2 text-sm">
-                    {!searchString
-                      ? todos.length
-                      : todos.filter((todo) =>
-                          todo.title
-                            .toLowerCase()
-                            .includes(searchString.toLowerCase())
-                        ).length}
+                    {filteredTodos.length}
                   </span>
                 </h2>
+
                 <div className="space-y-2">
-                  {todos.map((todo, index) => {
-                    if (
-                      searchString &&
-                      !todo.title
-                        .toLowerCase()
-                        .includes(searchString.toLowerCase())
-                    )
-                      return null;
-                    return (
-                      <Draggable
-                        key={todo.$id}
-                        draggableId={todo.$id}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <TodoCard
-                            todo={todo}
-                            index={index}
-                            id={id}
-                            innerRef={provided.innerRef}
-                            draggableProps={provided.draggableProps}
-                            dragHandleProps={provided.dragHandleProps}
-                          />
-                        )}
-                      </Draggable>
-                    );
-                  })}
+                  {filteredTodos.map((todo, index) => (
+                    <Draggable
+                      key={todo.$id}
+                      draggableId={todo.$id}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <TodoCard
+                          todo={todo}
+                          index={index}
+                          id={id}
+                          innerRef={provided.innerRef}
+                          draggableProps={provided.draggableProps}
+                          dragHandleProps={provided.dragHandleProps}
+                        />
+                      )}
+                    </Draggable>
+                  ))}
                   {provided.placeholder}
+
                   <div className="flex justify-end items-end p-2">
                     <button
                       onClick={handleAddTodo}
                       className="text-green-500 hover:text-green-600"
+                      aria-label="Add new task"
+                      title="Add new task"
                     >
                       <PlusCircleIcon className="h-10 w-10" />
                     </button>

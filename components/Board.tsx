@@ -24,60 +24,48 @@ export default function Board() {
   const handleOnDragEnd = (result: DropResult) => {
     const { source, destination, type } = result;
     if (!destination) return;
-
+  
     if (type === "column") {
       const entries = Array.from(board.columns.entries());
       const [removed] = entries.splice(source.index, 1);
       entries.splice(destination.index, 0, removed);
-      const rearragedColumns = new Map(entries);
-      setBoardState({ ...board, columns: rearragedColumns });
+      const rearrangedColumns = new Map(entries);
+      setBoardState({ ...board, columns: rearrangedColumns });
+      return;
     }
-
-    const columns = Array.from(board.columns);
-    const startColumnIndex = columns[Number(source.droppableId)];
-    const stopColumnIndex = columns[Number(destination.droppableId)];
-    const startCol: Column = {
-      id: startColumnIndex[0],
-      todos: startColumnIndex[1].todos,
-    };
-
-    const finshCol: Column = {
-      id: stopColumnIndex[0],
-      todos: stopColumnIndex[1].todos,
-    };
-
-    if (!startCol || !finshCol) return;
-
-    if (source.index === destination.index && startCol === finshCol) return;
-
-    const newTodos = startCol.todos;
-    const [movedTodo] = newTodos.splice(source.index, 1);
-    if (startCol.id == finshCol.id) {
-      newTodos.splice(destination.index, 0, movedTodo);
-      const newCol = {
-        id: startCol.id,
-        todos: newTodos,
-      };
-      const newColums = new Map(board.columns);
-      newColums.set(startCol.id, newCol);
-      setBoardState({ ...board, columns: newColums });
+  
+    const startCol = board.columns.get(source.droppableId);
+    const finishCol = board.columns.get(destination.droppableId);
+    if (!startCol || !finishCol) return;
+  
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    )
+      return;
+  
+    const newStartTodos = Array.from(startCol.todos);
+    const [movedTodo] = newStartTodos.splice(source.index, 1);
+  
+    if (startCol === finishCol) {
+      newStartTodos.splice(destination.index, 0, movedTodo);
+      const newCol = { ...startCol, todos: newStartTodos };
+      const newColumns = new Map(board.columns);
+      newColumns.set(startCol.id, newCol);
+      setBoardState({ ...board, columns: newColumns });
     } else {
-      const finshTodos = Array.from(finshCol.todos);
-      finshTodos.splice(destination.index, 0, movedTodo);
-      const newColums = new Map(board.columns);
-      const newCol = {
-        id: startCol.id,
-        todos: newTodos,
-      };
-      newColums.set(startCol.id, newCol);
-      newColums.set(finshCol.id, {
-        id: finshCol.id,
-        todos: finshTodos,
-      });
-      updateTodoInDB(movedTodo, finshCol.id);
-      setBoardState({ ...board, columns: newColums });
+      const newFinishTodos = Array.from(finishCol.todos);
+      newFinishTodos.splice(destination.index, 0, movedTodo);
+  
+      const newColumns = new Map(board.columns);
+      newColumns.set(startCol.id, { ...startCol, todos: newStartTodos });
+      newColumns.set(finishCol.id, { ...finishCol, todos: newFinishTodos });
+  
+      updateTodoInDB(movedTodo, finishCol.id);
+      setBoardState({ ...board, columns: newColumns });
     }
   };
+  
   return (
     <DragDropContext onDragEnd={handleOnDragEnd}>
       <Droppable droppableId="board" direction="horizontal" type="column">
