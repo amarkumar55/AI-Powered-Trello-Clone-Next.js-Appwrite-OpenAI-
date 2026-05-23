@@ -1,191 +1,151 @@
 # 🧠 AI-Powered Trello Clone
+### Next.js 13.4 · OpenAI · Appwrite Cloud · Zustand · Drag-and-Drop · TypeScript
 
-An intelligent task management application inspired by Trello, enhanced with **AI-generated task summaries**.  
-The app helps teams and individuals organize work efficiently across boards while leveraging AI to provide real-time insights.
+![Next.js](https://img.shields.io/badge/Next.js-13.4_App_Router-black?style=flat-square&logo=nextdotjs)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript)
+![OpenAI](https://img.shields.io/badge/OpenAI-GPT_API-412991?style=flat-square&logo=openai)
+![Appwrite](https://img.shields.io/badge/Appwrite-Cloud_Backend-FD366E?style=flat-square&logo=appwrite)
+![Tailwind](https://img.shields.io/badge/Tailwind_CSS-3.x-06B6D4?style=flat-square&logo=tailwindcss)
+![License](https://img.shields.io/badge/License-Educational-lightgrey?style=flat-square)
 
----
-
-## 🚀 Overview
-
-This application is a streamlined alternative to Trello, designed to manage tasks across multiple stages:
-
-- **To-Do**
-- **In Progress**
-- **Review**
-- **Done**
-
-Users can:
-- Create, update, and delete tasks
-- Drag and drop tasks between lists
-- Reorder tasks within a list
-- Automatically receive **AI-generated summaries** whenever the board changes (e.g., pending tasks, completed work)
+> A Kanban task manager with AI-powered board summarization — drag tasks across stages, and OpenAI automatically analyzes the board state and surfaces insights about pending work, blockers, and progress in real time.
 
 ---
 
-## 🤖 AI Features
+## 🤖 What Makes This Different from a Standard Trello Clone
 
-- 🔍 **Board Summary Generation**
-  - Automatically summarizes the board state
-  - Highlights pending, in-progress, and completed tasks
-- 🧠 **Context-Aware Insights**
-  - Uses OpenAI to analyze task descriptions and status changes
-- ⚡ **Real-Time Updates**
-  - AI summary refreshes whenever tasks are modified
+Most Trello clones stop at drag-and-drop. This one integrates OpenAI to analyze the board state on every change — summarizing pending tasks, flagging in-progress items, and providing context-aware productivity insights without any manual input.
 
 ---
 
-## 🛠️ Technology Stack
+## 🏗️ Architecture
 
-### Frontend
-- **Next.js (v13.4)** – App Router
-- **React**
-- **TypeScript**
-- **Tailwind CSS**
-- **Heroicons**
+```
+User drags / updates task
+        │
+        ▼
+Zustand Store            ← Local state update, instant UI response
+        │
+        ▼
+Appwrite Cloud           ← Persists task to DB, updates collection
+        │
+        ▼
+OpenAI API               ← Receives board state, generates summary
+        │
+        ▼
+Board Summary Panel      ← AI insights rendered in real time
+```
 
-### State & UX
-- **Zustand** – Lightweight state management
-- **react-beautiful-dnd** – Drag-and-drop task handling
+**Why Zustand over Redux?** Lightweight, no boilerplate, works cleanly with Next.js App Router — ideal for local board state that doesn't need a full Redux setup.
 
-### Backend / Cloud
-- **Appwrite Cloud**
-  - Authentication
-  - Database
-  - Storage
-
-### AI
-- **OpenAI API**
-  - Task analysis
-  - Board summarization
-
-### Development Environment
-- **OS:** Ubuntu Linux
-- **Package Managers:** npm / yarn
+**Why Appwrite?** BaaS (Backend-as-a-Service) with auth, database, and storage in one — removes the need for a custom backend while maintaining production-grade cloud infrastructure.
 
 ---
 
-## 📂 Project Structure (High Level)
+## ✨ Features
 
-```text
+- 🗂️ Four-stage Kanban board — To-Do · In Progress · Review · Done
+- 🤖 AI board summarization — OpenAI analyzes board state on every change
+- 🧠 Context-aware insights — pending tasks, blockers, completed work highlighted
+- 🔄 Drag-and-drop — reorder and move tasks via `react-beautiful-dnd`
+- 🔐 Authentication — Appwrite Cloud auth
+- ☁️ Cloud persistence — Appwrite database + storage
+- 📱 Fully responsive — Tailwind CSS
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| Framework | Next.js 13.4 (App Router) | SSR, routing, API |
+| Language | TypeScript | Type safety |
+| State | Zustand | Lightweight client state |
+| Drag & Drop | react-beautiful-dnd | Task reordering |
+| Backend | Appwrite Cloud | Auth, DB, storage |
+| AI | OpenAI API | Board summarization |
+| Styling | Tailwind CSS · Heroicons | UI components |
+
+---
+
+## 🚀 Getting Started
+
+```bash
+# Clone the repository
+git clone https://github.com/amarkumar55/AI-Powered-Trello-Clone-Next.js-Appwrite-OpenAI-
+cd tello
+
+# Install dependencies
+npm install
+```
+
+### Environment Variables
+
+Create a `.env.local` file:
+
+```env
+# Appwrite
+NEXT_PUBLIC_PROJECT_ID=your_appwrite_project_id
+NEXT_PUBLIC_DB_ID=your_database_id
+NEXT_PUBLIC_TODO_COLLECTION_ID=your_todo_collection_id
+NEXT_PUBLIC_APPWRITE_ENDPOINT=your_appwrite_endpoint
+NEXT_PUBLIC_STORAGE_ID=your_storage_bucket_id
+
+# OpenAI
+NEXT_PUBLIC_OPENAI_API_KEY=your_openai_api_key
+```
+
+### Appwrite Setup
+
+1. Create an account at [appwrite.io](https://appwrite.io)
+2. Create a project → database → collections → storage bucket
+3. Copy IDs into `.env.local`
+
+```bash
+# Run the development server
+npm run dev
+# Open http://localhost:3000
+```
+
+---
+
+## 📁 Project Structure
+
+```
 app/
-├── components/
-├── hooks/
-├── store/
-├── utils/
-├── styles/
+├── components/       # BoardColumn, TaskCard, AISummary, Modal
+├── hooks/            # Custom hooks for Appwrite + board logic
+├── store/            # Zustand board state store
+├── utils/            # OpenAI integration, helpers
+└── styles/           # Global CSS
 ```
 
 ---
 
-## ⚙️ Getting Started
+## 🌍 Use Cases
 
-### 1️⃣ Clone the Repository
-
-```bash
-      git clone https://github.com/amarkumar55/AI-Powered-Trello-Clone-Next.js-Appwrite-OpenAI-
-      cd tello
-```
-
-### Install Dependencies
-
-```bash
-   npm install
-   # or
-   yarn install
-```
-
-### Setup Environment Files
-
-```bash
-   Create the following environment files:
-   
-   .env              # Local development
-   .env.local        # Staging
-   .env.production   # Production
-```
-
-### Configure Environment Variables
-
-```bash
-   Create an Appwrite Cloud account and set up:
-   
-   Project
-   
-   Database
-   
-   Collections
-   
-   Storage bucket
-   
-   NEXT_PUBLIC_PROJECT_ID=your_appwrite_project_id
-   NEXT_PUBLIC_DB_ID=your_database_id
-   NEXT_PUBLIC_TODO_COLLECTION_ID=your_todo_collection_id
-   NEXT_PUBLIC_OPENAI_API_KEY=your_openai_api_key
-   NEXT_PUBLIC_APPWRITE_ENDPOINT=your_appwrite_endpoint
-   NEXT_PUBLIC_STORAGE_ID=your_storage_bucket_id
-```
-
-
-Run the Application
-
-```bash
-   npm run dev
-   # or
-   yarn dev
-
-   The app will be available at:
-   http://localhost:3000
-```
-
-
-
-🎯 Key Highlights
-
-   Modern Next.js App Router architecture
-   
-   Clean and scalable state management with Zustand
-   
-   Secure backend powered by Appwrite Cloud
-   
-   AI-driven productivity insights using OpenAI
-   
-   Fully responsive UI with Tailwind CSS
-   
-
-📌 Use Cases
-
-   Personal task management
-   
-   Team boards
-   
-   Productivity tracking
-   
-   AI-assisted planning
-
-
-
-
-📄 License
-
-   This project is licensed for learning and demonstration purposes.
-
-
-## ✅ Why This README Works
-
-✔ Clear AI differentiation  
-✔ Clean structure (Overview → Features → Stack → Setup)  
-✔ Recruiter-friendly language  
-✔ Matches **Senior Engineer / AI-enabled developer** profile  
-✔ Builds **credibility & trust**
+- Personal task management with AI productivity insights
+- Team Kanban boards with automated status summaries
+- AI-assisted planning and sprint tracking
+- OpenAI + Next.js integration reference implementation
 
 ---
 
-If you want next:
-- 🔥 README badges
-- 🔥 Screenshots section
-- 🔥 Demo GIF section
-- 🔥 Resume-ready project bullet points
-- 🔥 LinkedIn project description
+## 🔭 Roadmap
 
-Just tell me 👍
+- [ ] Multi-board support
+- [ ] Team collaboration with real-time updates (Pusher)
+- [ ] AI task prioritization suggestions
+- [ ] Due dates and deadline alerts
+- [ ] Mobile app (React Native)
 
+---
+
+## 👤 Author
+
+**Amar Kumar** — Senior Backend Engineer · IBM Certified AI Engineer  
+📌 [LinkedIn](https://www.linkedin.com/in/amarkumar241429017) · 💻 [GitHub](https://github.com/amarkumar55)
+
+---
+
+*Kanban meets GPT — board state analyzed automatically, so you focus on shipping not status updates.*
