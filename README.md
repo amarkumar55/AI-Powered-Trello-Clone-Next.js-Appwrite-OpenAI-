@@ -141,9 +141,12 @@ app/
 
 ---
 
-## 🤝 Connect With Me
+*Kanban meets GPT — board state analyzed automatically, so you focus on shipping not status updates.*
 
 ---
+
+
+## 🤝 Connect With Me
 
 <div align="center">
 
@@ -162,7 +165,3 @@ app/
 *If you found this project useful, consider giving it a ⭐ — it means a lot!*
 
 </div>
-
----
-
-*Kanban meets GPT — board state analyzed automatically, so you focus on shipping not status updates.*
